@@ -8,8 +8,6 @@
 using namespace geode::prelude;
 namespace lua = imes::luauapi;
 
-// File types the picker will accept.
-// Add more formats here once the decoder supports them.
 static const file::FilePickOptions VIDEO_TYPES = {
     std::nullopt,
     {
@@ -17,7 +15,7 @@ static const file::FilePickOptions VIDEO_TYPES = {
     }
 };
 
-// Reads settings from mod.json so we always have fresh values at import time.
+
 struct ImportSettings {
     int   frameLimit   = Mod::get()->getSettingValue<int64_t>("frame-limit");
     float frameSpacing = Mod::get()->getSettingValue<double>("frame-spacing");
@@ -36,7 +34,7 @@ static void doImport(
     log::info("[VideoImporter] File selected: {}", videoPath.string());
     log::info("[VideoImporter] Frame limit: {}, Spacing: {}", cfg.frameLimit, cfg.frameSpacing);
 
-    // TODO: replace this block with real frame extraction + object placement
+    
     FLAlertLayer::create(
         "Video Importer",
         fmt::format(
@@ -52,13 +50,13 @@ static void doImport(
     )->show();
 }
 
-// Hook into EditorUI to add our button to the Edit tab.
+
 class $modify(VideoImporterUI, EditorUI) {
 public:
 
     void onVideoImport(CCObject*) {
-        // The user must select exactly one object as an anchor point,
-        // the same way Art Importer works.
+        
+        
         if (this->getSelectedObjects()->count() != 1) {
             FLAlertLayer::create(
                 "Video Importer",
@@ -86,9 +84,7 @@ public:
     void createMoveMenu() {
         EditorUI::createMoveMenu();
 
-        // Using a built-in GD sprite as a placeholder until you add icon.png
-        // and register it as a spritesheet entry in mod.json resources.
-        // Swap "GJ_timeIcon_001.png" for your own sprite later.
+
         auto btn = CCMenuItemSpriteExtra::create(
             CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png"),
             this,
@@ -104,7 +100,6 @@ public:
     }
 };
 
-// On mod load, spin up the Luau script for the overlay/logging side.
 $on_mod(Loaded) {
     if (!lua::isReady()) {
         log::warn("[VideoImporter] LuauAPI isn't ready yet, skipping Luau load.");
