@@ -1,0 +1,92 @@
+{
+	"geode": "5.7.1",
+	"gd": {
+		"win": "2.2081",
+		"android": "2.2081"
+	},
+	"id": "yallcode.video_importer",
+	"name": "Video Importer",
+	"version": "v0.1.0",
+	"developer": "YallCode",
+	"description": "Import video frames into the GD level editor as pixel art.",
+	"links": {
+		"source": "https://github.com/yalldwcode/video-importer"
+	},
+	"dependencies": {
+		"imes.luauapi": ">=0.1.0-beta.1",
+		"geode.node-ids": ">=v1.23.3"
+	},
+	"resources": {
+		"files": [
+			"mod/*.luau"
+		]
+	},
+	"settings": {
+		"Frames": {
+			"name": "Frame Settings",
+			"description": "Options for how frames are imported.",
+			"type": "title"
+		},
+		"frame-limit": {
+			"name": "Frame limit",
+			"description": "Max number of frames to import from the video. Higher values can cause lag on weaker devices.",
+			"type": "int",
+			"default": 30,
+			"min": 1,
+			"max": 300
+		},
+		"frame-spacing": {
+			"name": "Frame spacing",
+			"description": "Horizontal gap between each frame placed in the editor (in units).",
+			"type": "float",
+			"default": 50.0,
+			"min": 0.0,
+			"max": 500.0
+		},
+		"Pixels": {
+			"name": "Pixel Settings",
+			"description": "Options for how pixels are placed.",
+			"type": "title"
+		},
+		"colour-channel": {
+			"name": "Colour channel",
+			"description": "The colour channel used for the placed pixel objects. It's best to leave this at the default.",
+			"type": "int",
+			"default": 1010,
+			"min": 1,
+			"max": 1020
+		},
+		"pixel-size": {
+			"name": "Pixel size",
+			"description": "Size of each pixel block in the editor.",
+			"type": "float",
+			"default": 5.0,
+			"min": 1.0,
+			"max": 30.0
+		},
+		"Safety": {
+			"name": "Safety",
+			"description": "Options to keep things from exploding.",
+			"type": "title"
+		},
+		"size-limit": {
+			"name": "Pixel limit per frame",
+			"description": "Max number of pixels per frame. Raising this too high can crash the game.",
+			"type": "int",
+			"default": 10000,
+			"min": 100,
+			"max": 80000
+		},
+		"disable-limit": {
+			"name": "Remove pixel limit",
+			"description": "Removes the per-frame pixel limit. Not recommended unless you know what you're doing — it can crash the game on large videos.",
+			"type": "bool",
+			"default": false
+		}
+	},
+	"tags": [
+		"editor",
+		"offline",
+		"utility"
+	]
+}
