@@ -1,15 +1,3 @@
-/**
- * Video Importer — main.cpp
- *
- * This file handles the C++ side of things:
- *   - Adding the import button to the editor's Edit tab
- *   - Opening the file picker when that button is clicked
- *   - Kicking off the Luau script via LuauAPI on mod load
- *
- * The actual video decoding and frame placement logic will live
- * in src/importer/ once implemented. For now it's stubbed out.
- */
-
 #include <Geode/Geode.hpp>
 #include <Geode/loader/ModEvent.hpp>
 #include <Geode/modify/EditorUI.hpp>
@@ -39,16 +27,7 @@ struct ImportSettings {
     bool  noLimit      = Mod::get()->getSettingValue<bool>("disable-limit");
 };
 
-/**
- * doImport — called after the user picks a file.
- *
- * TODO: Decode the video at `videoPath` frame by frame.
- *       For each frame, convert it to pixel objects using the same
- *       approach Art Importer uses (object string injection).
- *
- * For now this just shows a confirmation popup so you can verify
- * the button and file picker are wired up correctly.
- */
+
 static void doImport(
     const std::filesystem::path& videoPath,
     GameObject* anchor,
@@ -128,7 +107,7 @@ public:
 // On mod load, spin up the Luau script for the overlay/logging side.
 $on_mod(Loaded) {
     if (!lua::isReady()) {
-        log::warn("[VideoImporter] LuauAPI isn't ready yet — skipping Luau load.");
+        log::warn("[VideoImporter] LuauAPI isn't ready yet, skipping Luau load.");
         return;
     }
 

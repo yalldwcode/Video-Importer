@@ -79,7 +79,7 @@
 		},
 		"disable-limit": {
 			"name": "Remove pixel limit",
-			"description": "Removes the per-frame pixel limit. Not recommended unless you know what you're doing — it can crash the game on large videos.",
+			"description": "Removes the per-frame pixel limit. Not recommended unless you know what you're doing, it can crash the game on large videos.",
 			"type": "bool",
 			"default": false
 		}
