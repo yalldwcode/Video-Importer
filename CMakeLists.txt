@@ -10,7 +10,7 @@ endif()
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(VideoImporter VERSION 0.1.0)
+project(VideoImporter VERSION 1.0.0)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
@@ -22,5 +22,8 @@ else()
 endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
+
+# stb_image lives in src/importer alongside the source files
+target_include_directories(${PROJECT_NAME} PRIVATE src/importer)
 
 setup_geode_mod(${PROJECT_NAME})

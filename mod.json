@@ -6,7 +6,7 @@
 	},
 	"id": "yallcode.video_importer",
 	"name": "Video Importer",
-	"version": "v1.0.0-beta.1",
+	"version": "v1.0.0-beta.2",
 	"developer": "YallCode",
 	"description": "Import video frames into the GD level editor as pixel art.",
 	"links": {
