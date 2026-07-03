@@ -1,15 +1,16 @@
 #pragma once
 #include <Geode/Geode.hpp>
+#include <Geode/ui/Popup.hpp>
 #include <Geode/ui/GeodeUI.hpp>
 #include "VideoImporter.h"
 
 using namespace geode::prelude;
 
-class ImportMenu : public geode::Popup<VideoImporter*> {
+class ImportMenu : public geode::Popup<> {
 protected:
     VideoImporter* m_importer = nullptr;
 
-    bool setup(VideoImporter* imp) override;
+    bool init(VideoImporter* imp);
 
     void onImport(CCObject*);
     void onInfo(CCObject*);

@@ -1,6 +1,8 @@
 #include "ImportMenu.h"
 
-bool ImportMenu::setup(VideoImporter* imp) {
+bool ImportMenu::init(VideoImporter* imp) {
+    if (!Popup::init(240.f, 130.f)) return false;
+
     m_importer = imp;
 
     this->setTitle("Video Importer");
@@ -34,7 +36,7 @@ bool ImportMenu::setup(VideoImporter* imp) {
 
 ImportMenu* ImportMenu::create(VideoImporter* imp) {
     auto ret = new ImportMenu();
-    if (ret->initAnchored(240.f, 130.f, imp)) {
+    if (ret->init(imp)) {
         ret->autorelease();
         return ret;
     }
