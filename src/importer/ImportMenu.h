@@ -1,7 +1,6 @@
 #pragma once
-#include <Geode/Bindings.hpp>
+#include <Geode/Geode.hpp>
 #include <Geode/ui/GeodeUI.hpp>
-#include <Geode/Utils.hpp>
 #include "VideoImporter.h"
 
 using namespace geode::prelude;
