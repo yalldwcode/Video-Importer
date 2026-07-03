@@ -2,7 +2,6 @@
 #include <Geode/modify/EditorUI.hpp>
 #include <imes.luauapi/include/LuauAPI.hpp>
 
-#include "importer/ImportMenu.h"
 #include "importer/VideoImporter.h"
 
 using namespace geode::prelude;
@@ -15,19 +14,30 @@ public:
         if (this->getSelectedObjects()->count() != 1) {
             FLAlertLayer::create(
                 "Video Importer",
-                "Select <cy>exactly one</c> object first.\nIt'll be the anchor point for the imported frames.",
+                "Select <cy>exactly one</c> object first.\nIt'll be used as the anchor point for the frames.",
                 "OK"
             )->show();
             return;
         }
 
         auto anchor = CCArrayExt<GameObject*>(this->getSelectedObjects())[0];
-
         auto imp = new VideoImporter();
         imp->setSelectedObject(anchor);
         imp->setCloseMenu([imp]() { delete imp; });
 
-        ImportMenu::create(imp)->show();
+        geode::createQuickPopup(
+            "Video Importer",
+            "Pick a GIF to import as pixel art.\nEach frame gets placed side by side from your anchor.",
+            "Cancel", "Choose File",
+            [imp](auto, bool confirmed) {
+                if (confirmed) {
+                    imp->updateSettings();
+                    imp->importVideo();
+                } else {
+                    delete imp;
+                }
+            }
+        );
     }
 
     void createMoveMenu() {
