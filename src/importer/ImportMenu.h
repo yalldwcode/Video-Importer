@@ -6,12 +6,11 @@
 
 using namespace geode::prelude;
 
-class ImportMenu : public geode::Popup<> {
-private:
-    VideoImporter* importer = nullptr;
-
+class ImportMenu : public geode::Popup<VideoImporter*> {
 protected:
-    bool init(VideoImporter* imp);
+    VideoImporter* m_importer = nullptr;
+
+    bool setup(VideoImporter* imp) override;
 
     void onImport(CCObject*);
     void onInfo(CCObject*);

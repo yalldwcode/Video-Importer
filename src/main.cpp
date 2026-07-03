@@ -25,21 +25,14 @@ public:
 
         auto imp = new VideoImporter();
         imp->setSelectedObject(anchor);
+        imp->setCloseMenu([imp]() { delete imp; });
 
-        auto menu = ImportMenu::create(imp);
-        
-        imp->setCloseMenu([menu, imp]() {
-            menu->onClose(nullptr);
-            delete imp;
-        });
-
-        menu->show();
+        ImportMenu::create(imp)->show();
     }
 
     void createMoveMenu() {
         EditorUI::createMoveMenu();
 
-        
         auto btn = CCMenuItemSpriteExtra::create(
             CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png"),
             this,

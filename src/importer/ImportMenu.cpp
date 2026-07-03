@@ -1,13 +1,10 @@
 #include "ImportMenu.h"
 
-bool ImportMenu::init(VideoImporter* imp) {
-    if (!Popup::init(240.0f, 130.0f)) return false;
-
-    importer = imp;
+bool ImportMenu::setup(VideoImporter* imp) {
+    m_importer = imp;
 
     this->setTitle("Video Importer");
 
-    
     auto importBtn = CCMenuItemSpriteExtra::create(
         ButtonSprite::create("Choose a GIF"),
         this,
@@ -16,7 +13,6 @@ bool ImportMenu::init(VideoImporter* imp) {
     importBtn->setPosition(m_size.width / 2, m_size.height / 2 + 7.5f);
     m_buttonMenu->addChild(importBtn);
 
-    
     auto settingsBtn = CCMenuItemSpriteExtra::create(
         ButtonSprite::create("Settings"),
         this,
@@ -25,7 +21,6 @@ bool ImportMenu::init(VideoImporter* imp) {
     settingsBtn->setPosition(m_size.width / 2, m_size.height / 2 - 32.5f);
     m_buttonMenu->addChild(settingsBtn);
 
-    
     auto infoBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"),
         this,
@@ -39,7 +34,7 @@ bool ImportMenu::init(VideoImporter* imp) {
 
 ImportMenu* ImportMenu::create(VideoImporter* imp) {
     auto ret = new ImportMenu();
-    if (ret->init(imp)) {
+    if (ret->initAnchored(240.f, 130.f, imp)) {
         ret->autorelease();
         return ret;
     }
@@ -48,8 +43,8 @@ ImportMenu* ImportMenu::create(VideoImporter* imp) {
 }
 
 void ImportMenu::onImport(CCObject*) {
-    importer->updateSettings();
-    importer->importVideo();
+    m_importer->updateSettings();
+    m_importer->importVideo();
 }
 
 void ImportMenu::onInfo(CCObject*) {
