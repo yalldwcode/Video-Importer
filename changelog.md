@@ -1,3 +1,9 @@
+## Changelog:
+
+## v1.0.0-beta4
+
+fixed some crashing problem, from main.cpp file! And mod.json.
+
 ## v1.0.0-beta.3
 
 The animation was broken in beta.2. What was happening is the setup group was spawning all frame cycle groups at the same time with no delay, so every frame transition fired simultaneously. That's why it looked instant no matter what FPS you set in settings. It's fixed now each cycle group properly chains to the next one and the delay actually works.
