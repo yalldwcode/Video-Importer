@@ -8,7 +8,7 @@
 	},
 	"id": "yalldwcode.video_importer",
 	"name": "Video Importer",
-	"version": "v1.0.0-beta.2",
+	"version": "v1.0.0-beta.3",
 	"developer": "YallCode",
 	"description": "Import GIF frames into the GD level editor as animated pixel art.",
 	"links": {
@@ -90,6 +90,17 @@
 		"disable-limit": {
 			"name": "Remove pixel limit",
 			"description": "Removes the per-frame pixel limit. Not recommended unless you know what you're doing.",
+			"type": "bool",
+			"default": false
+		},
+		"Extras": {
+			"name": "Extras",
+			"description": "Optional features.",
+			"type": "title"
+		},
+		"camera-follow": {
+			"name": "Camera follow",
+			"description": "When the animation starts playing, the camera will lock onto the pixel art. Useful if your pixel art is far from the player start.",
 			"type": "bool",
 			"default": false
 		}

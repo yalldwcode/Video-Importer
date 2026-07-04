@@ -16,10 +16,7 @@ static const file::FilePickOptions ALLOWED_TYPES = {
 
 class VideoImporter final {
 private:
-    static constexpr int pixelObjID = 3097;
-    static constexpr int zOrder     = 1;
-
-    GameObject* obj        = nullptr;
+    GameObject* obj = nullptr;
     std::function<void()> closeMenu = nullptr;
 
     bool  noLimit    = false;
@@ -29,24 +26,9 @@ private:
     float animFps    = 10.0f;
     float pixelSize  = 5.0f;
     int   baseGroup  = 100;
+    bool  camFollow  = false;
 
     void placeVideo(const std::string& path);
-
-    void appendFrame(
-        std::ostringstream& out,
-        const unsigned char* frameData,
-        int width, int height, int channels,
-        float cx, float cy, int groupId
-    );
-
-    void appendAnimTriggers(
-        std::ostringstream& out,
-        int frameCount, int width, int height,
-        float anchorX, float anchorY
-    );
-
-    void formatHSV(float r, float g, float b, std::string& out) const;
-    void RGBtoHSV(float& r, float& g, float& b) const;
 
 public:
     VideoImporter() {}

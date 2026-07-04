@@ -44,16 +44,17 @@ void VideoImporter::placeVideo(const std::string& path) {
     float anchorX = obj->getPositionX();
     float anchorY = obj->getPositionY();
 
-    int   fl = frameLimit;
-    float ps = pixelSize;
-    int   cc = colourChan;
-    bool  nl = noLimit;
-    int   sl = sizeLimit;
+    int   fl  = frameLimit;
+    float ps  = pixelSize;
+    int   cc  = colourChan;
+    bool  nl  = noLimit;
+    int   sl  = sizeLimit;
     float fps = animFps;
-    int   bg = baseGroup;
-    auto  cm = closeMenu;
+    int   bg  = baseGroup;
+    bool  cf  = camFollow;
+    auto  cm  = closeMenu;
 
-    std::thread([path, anchorX, anchorY, fl, ps, cc, nl, sl, fps, bg, overlay, cm]() {
+    std::thread([path, anchorX, anchorY, fl, ps, cc, nl, sl, fps, bg, cf, overlay, cm]() {
         std::ifstream file(path, std::ios::binary);
         if (!file) {
             Loader::get()->queueInMainThread([overlay]() {
@@ -85,8 +86,8 @@ void VideoImporter::placeVideo(const std::string& path) {
             return;
         }
 
-        int totalFrames   = std::min(frames, fl);
-        int pixPerFrame   = width * height;
+        int totalFrames = std::min(frames, fl);
+        int pixPerFrame = width * height;
 
         if (!nl && pixPerFrame > sl) {
             stbi_image_free(gifData);
@@ -107,8 +108,6 @@ void VideoImporter::placeVideo(const std::string& path) {
         }
 
         std::ostringstream objStream;
-        float cx = anchorX;
-        float cy = anchorY;
 
         for (int i = 0; i < totalFrames; ++i) {
             const unsigned char* frameData = gifData + (i * width * height * channels);
@@ -120,14 +119,15 @@ void VideoImporter::placeVideo(const std::string& path) {
                     uint8_t a = (channels == 4) ? frameData[idx + 3] : 255;
                     if (a == 0) continue;
 
-                    std::string colour;
-                    float r = frameData[idx], g = frameData[idx + 1], b = frameData[idx + 2];
+                    float r = frameData[idx]     / 255.0f;
+                    float g = frameData[idx + 1] / 255.0f;
+                    float b = frameData[idx + 2] / 255.0f;
 
-                    r /= 255.0f; g /= 255.0f; b /= 255.0f;
-                    float maxC = std::max(r, std::max(g, b));
-                    float minC = std::min(r, std::min(g, b));
+                    float maxC  = std::max(r, std::max(g, b));
+                    float minC  = std::min(r, std::min(g, b));
                     float delta = maxC - minC;
-                    float hue = 0.0f, sat = 0.0f, val = maxC;
+                    float hue   = 0.0f, sat = 0.0f, val = maxC;
+
                     if (delta > 0.0f) {
                         sat = delta / maxC;
                         if      (maxC == r) hue = 60.0f * ((g - b) / delta);
@@ -137,17 +137,20 @@ void VideoImporter::placeVideo(const std::string& path) {
                     if (hue < 0.0f) hue += 360.0f;
                     hue = ((static_cast<int>(hue) + 180) % 360) - 180;
                     if (hue == 0.0f) hue++;
-                    colour = std::to_string(hue) + "a" + std::to_string(sat) + "a" + std::to_string(val) + "a1a1";
 
-                    float gdX = cx + (x - width  / 2.0f) * ps;
-                    float gdY = cy + (height / 2.0f - y) * ps;
+                    std::string colour = std::to_string(hue) + "a"
+                        + std::to_string(sat) + "a"
+                        + std::to_string(val) + "a1a1";
 
-                    objStream << "1," << 3097
+                    float gdX = anchorX + (x - width  / 2.0f) * ps;
+                    float gdY = anchorY + (height / 2.0f - y) * ps;
+
+                    objStream << "1,3097"
                         << ",2," << gdX
                         << ",3," << gdY
                         << ",21," << cc
                         << ",41,1,43," << colour
-                        << ",25," << 1
+                        << ",25,1"
                         << ",32," << ps
                         << ",57," << groupId
                         << ";";
@@ -158,12 +161,12 @@ void VideoImporter::placeVideo(const std::string& path) {
         stbi_image_free(gifData);
 
         float frameDuration = 1.0f / fps;
-        int setupGroup = bg + totalFrames;
-
+        int   setupGroup    = bg + totalFrames;
         float tx = anchorX - 300.0f;
         float ty = anchorY;
 
-        objStream << "1,1268,2," << (tx - 50.0f) << ",3," << ty << ",51," << setupGroup << ",63,0;";
+        objStream << "1,1268,2," << (tx - 50.0f) << ",3," << ty
+            << ",51," << setupGroup << ",63,0;";
 
         for (int j = 1; j < totalFrames; ++j) {
             objStream << "1,1049,2," << tx << ",3," << ty
@@ -171,23 +174,27 @@ void VideoImporter::placeVideo(const std::string& path) {
                 << ",51," << (bg + j) << ",56,0;";
         }
 
+        objStream << "1,1268,2," << tx << ",3," << ty
+            << ",57," << setupGroup << ",58,1"
+            << ",51," << (setupGroup + 1) << ",63," << frameDuration << ";";
+
+        if (cf) {
+            objStream << "1,1347,2," << tx << ",3," << ty
+                << ",57," << setupGroup << ",58,1"
+                << ",51," << bg << ",76,1,77,1,10,0;";
+        }
+
         for (int i = 0; i < totalFrames; ++i) {
             int cycleGroup     = setupGroup + 1 + i;
             int nextCycleGroup = setupGroup + 1 + ((i + 1) % totalFrames);
-            int hideGroup      = bg + i;
-            int showGroup      = bg + ((i + 1) % totalFrames);
-
-            objStream << "1,1268,2," << tx << ",3," << ty
-                << ",57," << setupGroup << ",58,1"
-                << ",51," << cycleGroup << ",63,0;";
 
             objStream << "1,1049,2," << tx << ",3," << ty
                 << ",57," << cycleGroup << ",58,1"
-                << ",51," << hideGroup << ",56,0;";
+                << ",51," << (bg + i) << ",56,0;";
 
             objStream << "1,1049,2," << tx << ",3," << ty
                 << ",57," << cycleGroup << ",58,1"
-                << ",51," << showGroup << ",56,1;";
+                << ",51," << (bg + ((i + 1) % totalFrames)) << ",56,1;";
 
             objStream << "1,1268,2," << tx << ",3," << ty
                 << ",57," << cycleGroup << ",58,1"
@@ -228,4 +235,5 @@ void VideoImporter::updateSettings() {
     animFps    = static_cast<float>(Mod::get()->getSettingValue<double>("anim-fps"));
     pixelSize  = static_cast<float>(Mod::get()->getSettingValue<double>("pixel-size"));
     baseGroup  = static_cast<int>(Mod::get()->getSettingValue<int64_t>("base-group"));
+    camFollow  = Mod::get()->getSettingValue<bool>("camera-follow");
 }

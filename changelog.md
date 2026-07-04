@@ -1,16 +1,14 @@
-## Changelog
+## v1.0.0-beta.3
+
+The animation was broken in beta.2. What was happening is the setup group was spawning all frame cycle groups at the same time with no delay, so every frame transition fired simultaneously. That's why it looked instant no matter what FPS you set in settings. It's fixed now, each cycle group properly chains to the next one and the delay actually works.
+
+There's now an optional camera follow setting. When you turn it on, a Follow trigger gets placed with the animation triggers so the camera locks onto the pixel art when the level plays. Good if your pixel art is far from where the player starts.
+
+The Luau script now actually does something, it logs when the editor opens, hooks into playtesting, and shows a small info panel if you have the ImGui overlay open.
 
 ## v1.0.0-beta.2
 
-GIF frames are now actually decoded and placed in the editor as pixel art, so the mod finally does what it's supposed to do.
-
-All frames go on the same grid and animate automatically when you play the level. No trigger setup needed, it's all done for you.
-
-The pixel art was coming out upside down, that's fixed. It's also centered on the anchor now instead of growing from the corner.
-
-Importing a big GIF used to freeze the game for a second. Now it runs in the background with a loading screen.
-
-MP4, MOV and WebM show a message pointing you to emotesizer.com/tools/resize to convert first. macOS and iOS builds are working too.
+GIF frames are now actually decoded and placed in the editor as pixel art. All frames go on the same grid and animate automatically when you play the level. The pixel art was coming out upside down in beta.1, that's fixed. Importing a big GIF now runs in the background with a loading screen. macOS and iOS builds added.
 
 ## v1.0.0-beta.1
 

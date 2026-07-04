@@ -1,31 +1,32 @@
-
-
 local modId  = geode.Mod.getID()
 local modVer = geode.Mod.getVersion()
-
 
 geode.hook("geode.gd.LevelEditorLayer:init/2", {
     after = function(self, level, isNew, result)
         if result then
-            print(string.format("[VideoImporter] Editor opened. Level: %s", tostring(level)))
+            print("Video Importer is ready in the editor")
         end
         return result
     end,
 })
 
-
-local showPanel = false
+geode.hook("geode.gd.EditorUI:onPlaytest/2", {
+    after = function(self, sender, result)
+        print("Playtesting started, animation triggers should be running")
+        return result
+    end,
+})
 
 imgui.onDraw(function()
-    imgui.window("VideoImporter Dev", function()
+    imgui.window("Video Importer", function()
         imgui.text(modId .. " v" .. modVer)
         imgui.separator()
-        imgui.text("Go into the editor, select one")
-        imgui.text("object, and click the import button.")
+        imgui.text("Select one object in the editor,")
+        imgui.text("then click the import button in the Edit tab.")
         imgui.separator()
-        imgui.text("Supported formats: .gif, .mp4, .webm, .mov")
-        imgui.text("(Full video decode coming soon!)")
+        imgui.text("Keep GIFs small for best results.")
+        imgui.text("emotesizer.com/tools/resize")
     end)
 end)
 
-print(string.format("[VideoImporter] Luau script loaded, %s %s", modId, modVer))
+print("Video Importer loaded " .. modVer)
