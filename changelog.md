@@ -2,12 +2,16 @@
 
 ## v1.0.0-beta.2
 
-Rewrote the mod to properly mirror Art Importer's structure. Added VideoImporter and ImportMenu classes, wired up the in-editor popup with an import button, settings, and info. GIF decoding is now implemented using stb_image. each frame gets placed as pixel objects side by side in the editor.
+GIF frames are now actually decoded and placed in the editor as pixel art, so the mod finally does what it's supposed to do.
 
-Still missing: custom button icon (using a placeholder for now).
+All frames go on the same grid and animate automatically when you play the level. No trigger setup needed, it's all done for you.
+
+The pixel art was coming out upside down, that's fixed. It's also centered on the anchor now instead of growing from the corner.
+
+Importing a big GIF used to freeze the game for a second. Now it runs in the background with a loading screen.
+
+MP4, MOV and WebM show a message pointing you to emotesizer.com/tools/resize to convert first. macOS and iOS builds are working too.
 
 ## v1.0.0-beta.1
 
-First beta! The import button shows up in the Edit tab, the file picker works for .gif, .mp4, .webm and .mov files, and all the mod settings are wired up. LuauAPI is set up with a companion Luau script for logging.
-
-Actual frame decoding and pixel placement aren't done yet that's coming soon.
+First beta. The import button showed up and the file picker opened but nothing was actually imported yet.
