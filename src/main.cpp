@@ -45,7 +45,7 @@ public:
         EditorUI::createMoveMenu();
 
         auto btn = CCMenuItemSpriteExtra::create(
-            CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png"),
+            CCSprite::create(Mod::get()->getResourcesDir().append("icon.png").string().c_str()),
             this,
             menu_selector(VideoImporterUI::onVideoImport)
         );
