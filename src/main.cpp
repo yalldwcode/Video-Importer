@@ -27,7 +27,8 @@ public:
 
         geode::createQuickPopup(
             "Video Importer",
-            "Pick a GIF to import as pixel art.\nEach frame gets placed side by side from your anchor.",
+            "Pick a GIF to import as animated pixel art.\n"
+            "Each frame gets stacked on the same grid and animates when you play the level.",
             "Cancel", "Choose File",
             [imp](auto, bool confirmed) {
                 if (confirmed) {
@@ -60,12 +61,16 @@ public:
 
 $on_mod(Loaded) {
     if (!lua::isReady()) {
-        log::warn("[VideoImporter] LuauAPI isn't ready yet, skipping Luau load.");
+        log::warn("[VideoImporter] LuauAPI not ready yet.");
         return;
     }
 
-    auto res = lua::runFile(Mod::get()->getResourcesDir(), "VideoImporter.luau");
-    if (res.isErr()) {
-        log::error("[VideoImporter] Luau script error: {}", res.unwrapErr());
-    }
+    lua::runFileAsync(
+        Mod::get()->getResourcesDir(),
+        "VideoImporter.luau"
+    ).listen([](auto* result) {
+        if (result->isErr()) {
+            log::error("[VideoImporter] Luau error: {}", result->unwrapErr());
+        }
+    });
 }

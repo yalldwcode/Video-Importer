@@ -4,16 +4,16 @@
 		"win": "2.2081",
 		"android": "2.2081"
 	},
-	"id": "yallcode.video_importer",
+	"id": "yalldwcode.video_importer",
 	"name": "Video Importer",
 	"version": "v1.0.0-beta.2",
 	"developer": "YallCode",
-	"description": "Import video frames into the GD level editor as pixel art.",
+	"description": "Import GIF frames into the GD level editor as animated pixel art.",
 	"links": {
 		"source": "https://github.com/yalldwcode/video-importer"
 	},
 	"dependencies": {
-		"imes.luauapi": ">=0.1.0-beta.1",
+		"imes.luauapi": ">=0.1.0-beta.14",
 		"geode.node-ids": ">=v1.23.3"
 	},
 	"resources": {
@@ -29,19 +29,19 @@
 		},
 		"frame-limit": {
 			"name": "Frame limit",
-			"description": "Max number of frames to import from the video. Higher values can cause lag on weaker devices.",
+			"description": "Max number of frames to import from the GIF.",
 			"type": "int",
 			"default": 30,
 			"min": 1,
 			"max": 300
 		},
-		"frame-spacing": {
-			"name": "Frame spacing",
-			"description": "Horizontal gap between each frame placed in the editor (in units).",
+		"anim-fps": {
+			"name": "Animation speed (FPS)",
+			"description": "How fast the animation plays in-game. Higher = faster.",
 			"type": "float",
-			"default": 50.0,
-			"min": 0.0,
-			"max": 500.0
+			"default": 10.0,
+			"min": 1.0,
+			"max": 60.0
 		},
 		"Pixels": {
 			"name": "Pixel Settings",
@@ -50,7 +50,7 @@
 		},
 		"colour-channel": {
 			"name": "Colour channel",
-			"description": "The colour channel used for the placed pixel objects. It's best to leave this at the default.",
+			"description": "The colour channel used for the pixel objects.",
 			"type": "int",
 			"default": 1010,
 			"min": 1,
@@ -63,6 +63,14 @@
 			"default": 5.0,
 			"min": 1.0,
 			"max": 30.0
+		},
+		"base-group": {
+			"name": "Base group ID",
+			"description": "Starting group ID for frame groups and animation triggers. Change this if it conflicts with groups already in your level.",
+			"type": "int",
+			"default": 100,
+			"min": 1,
+			"max": 9800
 		},
 		"Safety": {
 			"name": "Safety",
@@ -79,7 +87,7 @@
 		},
 		"disable-limit": {
 			"name": "Remove pixel limit",
-			"description": "Removes the per-frame pixel limit. Not recommended unless you know what you're doing, it can crash the game on large videos.",
+			"description": "Removes the per-frame pixel limit. Not recommended unless you know what you're doing.",
 			"type": "bool",
 			"default": false
 		}
