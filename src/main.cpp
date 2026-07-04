@@ -65,12 +65,8 @@ $on_mod(Loaded) {
         return;
     }
 
-    lua::runFileAsync(
-        Mod::get()->getResourcesDir(),
-        "VideoImporter.luau"
-    ).listen([](auto* result) {
-        if (result->isErr()) {
-            log::error("[VideoImporter] Luau error: {}", result->unwrapErr());
-        }
-    });
+    auto res = lua::runFile(Mod::get()->getResourcesDir(), "VideoImporter.luau");
+    if (res.isErr()) {
+        log::error("[VideoImporter] Luau error: {}", res.unwrapErr());
+    }
 }

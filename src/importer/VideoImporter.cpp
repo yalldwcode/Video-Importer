@@ -63,10 +63,10 @@ void VideoImporter::placeVideo(const std::string& path) {
             return;
         }
 
-        std::vector<unsigned char> buf(
+        std::vector<unsigned char> buf{
             std::istreambuf_iterator<char>(file),
-            std::istreambuf_iterator<char>()
-        );
+            std::istreambuf_iterator<char>{}
+        };
         file.close();
 
         int width = 0, height = 0, frames = 0, channels = 0;
