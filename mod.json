@@ -13,7 +13,7 @@
 		"source": "https://github.com/yalldwcode/video-importer"
 	},
 	"dependencies": {
-		"imes.luauapi": ">=0.1.0-beta.14",
+		"imes.luauapi": ">=0.1.0-beta.13",
 		"geode.node-ids": ">=v1.23.3"
 	},
 	"resources": {
