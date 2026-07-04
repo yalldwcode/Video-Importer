@@ -19,10 +19,9 @@
 		"geode.node-ids": ">=v1.23.3"
 	},
 	"resources": {
-		"files": [
-			"mod/*.luau",
-			"mod/icon.png"
-		]
+    "files": [
+        "mod/*.luau"
+    ]
 	},
 	"settings": {
 		"Frames": {
