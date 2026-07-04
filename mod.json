@@ -20,7 +20,7 @@
 	},
 	"resources": {
 		"files": [
-			"mod/*.luau"
+			"mod/*.luau",
 			"mod/icon.png"
 		]
 	},
