@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Importer - GD Mod</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #090914;
+      --surface:  #10101f;
+      --surface2: #181830;
+      --border:   #252545;
+      --accent:   #7c3aed;
+      --accent2:  #ea580c;
+      --glow:     #7c3aed44;
+      --text:     #e4e0ff;
+      --muted:    #6e6a96;
+      --radius:   10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 40px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 60px;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 100px 40px 80px;
+    }
+
+    .hero-text { max-width: 480px; }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 4px 12px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent2);
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      max-width: 380px;
+    }
+
+    .btn-group { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: opacity 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); }
+
+    /* PIXEL DEMO */
+    .demo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .demo-shell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 0 60px var(--glow);
+    }
+
+    .demo-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .demo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .demo-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    #pixel-canvas {
+      display: grid;
+      gap: 2px;
+      image-rendering: pixelated;
+    }
+
+    .px-row { display: flex; gap: 2px; }
+
+    .px {
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--surface2);
+      transition: background 0.12s;
+    }
+
+    .demo-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .demo-frame-counter { color: var(--accent); font-weight: 500; }
+
+    /* SECTIONS */
+    section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 52px;
+    }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 40px;
+    }
+
+    /* HOW TO USE */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 26px;
+      position: relative;
+    }
+
+    .step-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .step p { font-size: 0.9rem; color: var(--muted); }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .feature:hover { border-color: var(--accent); }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--surface2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+    }
+
+    .feature h3 { font-size: 0.95rem; font-weight: 500; margin-bottom: 6px; }
+    .feature p  { font-size: 0.85rem; color: var(--muted); }
+
+    /* SETTINGS */
+    .settings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .settings-table th {
+      text-align: left;
+      padding: 10px 16px;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .settings-table tr:last-child td { border-bottom: none; }
+
+    .settings-table tr:hover td { background: var(--surface); }
+
+    .setting-name { font-weight: 500; color: var(--text); }
+
+    .setting-default {
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+      background: var(--surface2);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .settings-table td:last-child { color: var(--muted); font-size: 0.85rem; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .footer-credits { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-credits a { color: var(--muted); }
+    .footer-credits a:hover { color: var(--text); }
+
+    /* RESPONSIVE */
+    @media (max-width: 720px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 60px 20px 50px;
+        gap: 40px;
+        text-align: center;
+      }
+
+      .hero-sub { margin-inline: auto; }
+      .btn-group { justify-content: center; }
+      .demo-wrap { order: -1; }
+
+      section { padding: 60px 20px; }
+      .divider { margin: 0 20px; }
+      footer { padding: 30px 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .px { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Video<span>Importer</span></div>
+  <ul class="nav-links">
+    <li><a href="#how">How to use</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#settings">Settings</a></li>
+    <li><a href="https://github.com/yalldwcode/video-importer">GitHub</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">Geode Mod · GD 2.2</div>
+    <h1>Turn GIFs into <em>animated</em> pixel art</h1>
+    <p class="hero-sub">
+      Import any GIF directly into the Geometry Dash level editor.
+      Each frame gets placed as pixel art and a trigger chain handles the animation automatically.
+    </p>
+    <div class="btn-group">
+      <a href="https://github.com/yalldwcode/video-importer" class="btn btn-primary">Get it on GitHub</a>
+      <a href="#how" class="btn btn-secondary">How it works</a>
+    </div>
+  </div>
+
+  <div class="demo-wrap">
+    <div class="demo-shell">
+      <div class="demo-bar">
+        <div class="demo-dot"></div>
+        <div class="demo-dot"></div>
+        <div class="demo-dot"></div>
+        <span class="demo-label">live preview</span>
+      </div>
+      <div id="pixel-canvas"></div>
+      <div class="demo-info">
+        <span>16 × 12 · 3 fps</span>
+        <span class="demo-frame-counter" id="frame-counter">frame 1</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="how">
+  <div class="section-label">How to use</div>
+  <h2>Three steps and you're done</h2>
+  <p class="section-sub">No coding, no fiddling with triggers — just pick a GIF and the mod handles the rest.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Place an anchor</h3>
+      <p>In the level editor, select exactly one object. This is where the pixel art will be centered.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Pick your GIF</h3>
+      <p>Click the import button in the Edit tab, hit Choose File, and browse to your GIF.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Play the level</h3>
+      <p>The animation plays automatically. No trigger setup needed — it's all placed for you.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="features">
+  <div class="section-label">Features</div>
+  <h2>What it actually does</h2>
+  <p class="section-sub">Everything runs inside GD — no external tools needed once your GIF is ready.</p>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">🎞️</div>
+      <h3>Full GIF decoding</h3>
+      <p>Every frame is decoded and placed as individual pixel objects in the editor.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚙️</div>
+      <h3>Auto animation</h3>
+      <p>Toggle and Spawn triggers are placed automatically to loop the animation in-game.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🧵</div>
+      <h3>Background import</h3>
+      <p>Large GIFs are processed in a background thread so the game doesn't freeze.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🎨</div>
+      <h3>Accurate colours</h3>
+      <p>Pixels are placed with HSV colour matching and transparency support.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📱</div>
+      <h3>Android support</h3>
+      <p>Works on mobile too, tested on Samsung devices. macOS and iOS builds included.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔧</div>
+      <h3>Tweakable settings</h3>
+      <p>Control pixel size, animation speed, frame limit, group IDs and more from mod settings.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="settings">
+  <div class="section-label">Settings</div>
+  <h2>What you can change</h2>
+  <p class="section-sub">All settings are in the Geode mod settings page. Defaults work fine for most GIFs.</p>
+  <table class="settings-table">
+    <thead>
+      <tr>
+        <th>Setting</th>
+        <th>Default</th>
+        <th>What it does</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="setting-name">Frame limit</span></td>
+        <td><span class="setting-default">30</span></td>
+        <td>Max frames to import. Keep this low for big GIFs.</td>
+      </tr>
+      <tr>
+        <td><span class="setting-name">Animation speed</span></td>
+        <td><span class="setting-default">10 fps</span></td>
+        <td>How fast the animation plays in-game.</td>
+      </tr>
+      <tr>
+        <td><span class="setting-name">Pixel size</span></td>
+        <td><span class="setting-default">5</span></td>
+        <td>Size of each pixel block placed in the editor.</td>
+      </tr>
+      <tr>
+        <td><span class="setting-name">Colour channel</span></td>
+        <td><span class="setting-default">1010</span></td>
+        <td>The colour channel used for pixel objects. Change this if it conflicts.</td>
+      </tr>
+      <tr>
+        <td><span class="setting-name">Base group ID</span></td>
+        <td><span class="setting-default">100</span></td>
+        <td>Starting group ID for frames and triggers. Raise this if it conflicts with your level.</td>
+      </tr>
+      <tr>
+        <td><span class="setting-name">Pixel limit per frame</span></td>
+        <td><span class="setting-default">10 000</span></td>
+        <td>Safety cap to prevent crashes on large GIFs. Can be disabled in settings.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="divider">
+
+<footer>
+  <span>Made by <a href="https://github.com/yalldwcode">YallCode</a> · Geode mod · v1.0.0-beta.2</span>
+  <div class="footer-credits">
+    <a href="https://github.com/ItMe12s/LuauAPI">LuauAPI by ItMe12s</a>
+    <a href="https://github.com/CelestialGecko/Art-importer">Art Importer by Grian</a>
+    <a href="https://emotesizer.com/tools/resize">Resize your GIF</a>
+  </div>
+</footer>
+
+<script>
+  const W = 16, H = 12;
+  const palette = ['#10101f', '#7c3aed', '#a855f7', '#ea580c', '#fb923c', '#c084fc', '#fbbf24'];
+
+  function makeFrame(phase) {
+    return Array.from({ length: H }, (_, y) =>
+      Array.from({ length: W }, (_, x) => {
+        const nx = x / W, ny = y / H;
+        const wave = Math.sin(nx * Math.PI * 2 + phase) * 0.5 + 0.5;
+        const dist = Math.sqrt((nx - 0.5) ** 2 + (ny - 0.5) ** 2);
+        const v = Math.sin(dist * 10 - phase * 2) * 0.5 + 0.5;
+        const bright = wave * 0.6 + v * 0.4;
+        if (bright < 0.25) return 0;
+        if (bright < 0.45) return 1;
+        if (bright < 0.58) return 2;
+        if (bright < 0.68) return 5;
+        if (bright < 0.78) return 3;
+        return 4;
+      })
+    );
+  }
+
+  const phases = [0, 1.2, 2.4];
+  const frames = phases.map(makeFrame);
+
+  const canvas = document.getElementById('pixel-canvas');
+  const counter = document.getElementById('frame-counter');
+
+  for (let y = 0; y < H; y++) {
+    const row = document.createElement('div');
+    row.className = 'px-row';
+    for (let x = 0; x < W; x++) {
+      const px = document.createElement('div');
+      px.className = 'px';
+      row.appendChild(px);
+    }
+    canvas.appendChild(row);
+  }
+
+  const rows = canvas.querySelectorAll('.px-row');
+
+  function renderFrame(fi) {
+    const frame = frames[fi];
+    rows.forEach((row, y) => {
+      row.querySelectorAll('.px').forEach((px, x) => {
+        px.style.background = palette[frame[y][x]];
+      });
+    });
+    counter.textContent = `frame ${fi + 1}`;
+  }
+
+  let current = 0;
+  renderFrame(0);
+  setInterval(() => {
+    current = (current + 1) % frames.length;
+    renderFrame(current);
+  }, 320);
+</script>
+
+</body>
+</html>
